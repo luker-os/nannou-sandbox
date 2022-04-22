@@ -13,6 +13,13 @@ pub fn rounded_rect(reference: &Rect, radius: &f32) -> Vec<Point2> {
     points.extend(rounded_corner(br, tr, bl, radius));
     points.extend(rounded_corner(bl, br, tl, radius));
 
+    if let Some(point) = points.get(0) {
+        points.push(point.clone());
+    } else {
+        // no points were created due to small radius. return the original reference rect's corners.
+        return vec![tl, tr, br, bl, tl];
+    }
+
     points
 }
 
@@ -117,27 +124,6 @@ pub fn rounded_corner(
         points.push(Point2::new(point_x, point_y));
     }
     points
-
-    // --------------------------------
-    // let vec1 = corner - a;
-    // let vec2 = corner - b;
-
-    // let angle = vec1.angle_between(vec2) / 2f32;
-
-    // let tan = angle.tan().abs();
-
-    // // let segment = radius / tan;
-    // // Skipping some code that will probably bite me...
-
-    // let segment = corner.distance(a).min(corner.distance(b));
-    // let radius = segment * tan;
-
-    // let p1_cross = proportion_point(corner, segment, corner.distance(a), vec1);
-    // let p2_cross = proportion_point(corner, segment, corner.distance(a), vec2);
-
-    // let vector = corner * 2f32 - p1_cross - p2_cross;
-
-    // let length =
 }
 
 pub fn length(dx: f32, dy: f32) -> f32 {

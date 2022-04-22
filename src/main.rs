@@ -51,7 +51,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
             let grey = lin_srgb(grey, grey, grey);
 
             // let size = app.time.sin() * 25f32 + 100f32;
-            let radius = app.time.sin() * size / 2f32 + size / 2f32;
+            let radius = (app.time + r * 5f32 + c * 5f32).sin() * size / 2f32 + size / 2f32;
             let points = rounded_rect(&Rect::from_x_y_w_h(x, y, size, size), &(radius / 2f32));
 
             draw.polygon().points(points).color(grey);
