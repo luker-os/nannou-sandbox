@@ -13,8 +13,8 @@ pub fn rounded_rect(reference: &Rect, radius: &f32) -> Vec<Point2> {
     points.extend(rounded_corner(br, tr, bl, radius));
     points.extend(rounded_corner(bl, br, tl, radius));
 
-    if let Some(point) = points.get(0) {
-        points.push(point.clone());
+    if points.len() > 0 {
+        points.push(points.get(0).unwrap().clone());
     } else {
         // no points were created due to small radius. return the original reference rect's corners.
         return vec![tl, tr, br, bl, tl];
