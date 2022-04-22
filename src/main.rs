@@ -1,6 +1,7 @@
 use nannou::prelude::*;
 
 mod rounded_corners;
+mod util;
 
 use rounded_corners::rounded_rect;
 
@@ -26,7 +27,7 @@ fn view(app: &App, _model: &Model, frame: Frame) {
 
     let rows = 4;
     let columns = 5;
-    let size = 200f32;
+    // let size = 200f32;
 
     let window = app.window_rect();
     let height = window.h();
@@ -46,17 +47,15 @@ fn view(app: &App, _model: &Model, frame: Frame) {
             let y = y_div / 2 as f32 + y_div * r;
             let y = y - height / 2f32;
 
-            let grey = app.time.sin() / 2f32 + 0.5f32;
+            let grey = ((app.time + r + c) / 3f32).sin() / 2f32 + 0.5f32;
 
             let grey = lin_srgb(grey, grey, grey);
 
-            // let size = app.time.sin() * 25f32 + 100f32;
+            let size = (app.time + r * 3f32 + c * 3f32).sin() * 25f32 + 200f32;
             let radius = (app.time + r * 5f32 + c * 5f32).sin() * size / 2f32 + size / 2f32;
             let points = rounded_rect(&Rect::from_x_y_w_h(x, y, size, size), &(radius / 2f32));
 
             draw.polygon().points(points).color(grey);
-
-            // draw.polygon().points_colored(points);
         }
     }
 
