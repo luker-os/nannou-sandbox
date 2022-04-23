@@ -16,4 +16,3 @@ pub fn scale_point(app: &App) -> Point2 {
     Point2::new(window.w(), window.h())
 }
 
-// pub fn cart_offset(app: &App, Point2)

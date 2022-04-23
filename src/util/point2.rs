@@ -9,3 +9,7 @@ pub fn point_towards(anchor: Point2, towards: Point2, distance: &f32) -> Point2 
 
     Point2::new(x, y)
 }
+
+pub fn shift(points: Vec<Point2>, offset: Point2) -> Vec<Point2> {
+    points.into_iter().map(|point| point + offset).collect()
+}
