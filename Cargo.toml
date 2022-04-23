@@ -1,7 +1,9 @@
 [package]
 edition = "2021"
 name = "nannou-sandbox"
+
 version = "0.1.0"
 
 [dependencies]
+lazy_static = "1.4"
 nannou = "0.18.1"

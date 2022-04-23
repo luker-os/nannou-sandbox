@@ -1,44 +1,56 @@
-use nannou::prelude::*;
+use nannou::{color, prelude::*};
 
-use crate::{model::Model, rounded_corners::rounded_rect};
+use crate::{
+    model::Model,
+    rounded_corners::rounded_rect,
+    util::{
+        grid::{grid_point, grid_points},
+        wave::Sin,
+        window::{scale_point, window_divided},
+    },
+};
 
-pub fn view(app: &App, _model: &Model, frame: Frame) {
-    let grey = Rgb::from_components((0.5f32, 0.5f32, 0.5f32));
+lazy_static! {
+    static ref BACKGROUND_COLOR: Gray<f32> = color::gray(0.5f32);
+}
+
+static ROWS: i32 = 4;
+static COLS: i32 = 5;
+
+pub fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
-    draw.background().color(grey);
 
-    let rows = 4;
-    let columns = 5;
+    // Reset
+    clear(&draw);
 
-    let window = app.window_rect();
-    let height = window.h();
-    let width = window.w();
+    // Create
+    draw_rounded_rect_grid(app, &draw, model, &frame);
 
-    let x_div = width as f32 / columns as f32;
-    let y_div = height as f32 / rows as f32;
-
-    for r in 0..rows {
-        let r = r as f32;
-        for c in 0..columns {
-            let c = c as f32;
-
-            let x = x_div / 2 as f32 + x_div * c;
-            let x = x - width / 2f32;
-
-            let y = y_div / 2 as f32 + y_div * r;
-            let y = y - height / 2f32;
-
-            let grey = ((app.time + r + c) / 3f32).sin() / 2f32 + 0.5f32;
-
-            let grey = lin_srgb(grey, grey, grey);
-
-            let size = (app.time + r * 3f32 + c * 3f32).sin() * 25f32 + 200f32;
-            let radius = (app.time + r * 5f32 + c * 5f32).sin() * size / 2f32 + size / 2f32;
-            let points = rounded_rect(&Rect::from_x_y_w_h(x, y, size, size), &(radius / 2f32));
-
-            draw.polygon().points(points).color(grey);
-        }
-    }
-
+    // Commit
     draw.to_frame(app, &frame).unwrap();
+}
+
+fn draw_rounded_rect_grid(app: &App, draw: &Draw, _model: &Model, _frame: &Frame) {
+    let div = window_divided(app, ROWS, COLS);
+
+    for point in grid_points(ROWS, COLS) {
+        let center = grid_point(div, point, scale_point(&app));
+
+        let value = Sin::with_range(point.x + point.y, 80f32, 0f32, 1f32).get(app.time);
+        let size =
+            Sin::with_range(point.x * 3f32 + point.y * 3f32, 5f32, 175f32, 225f32).get(app.time);
+        let radius = Sin::with_range(point.x * 5f32 + point.y * 5f32, 10f32, 0f32, size / 2f32)
+            .get(app.time);
+
+        let points = rounded_rect(
+            &Rect::from_xy_wh(center, Point2::ONE * size),
+            &(radius / 2f32),
+        );
+
+        draw.polygon().points(points).color(color::gray(value));
+    }
+}
+
+fn clear(draw: &Draw) {
+    draw.background().color(*BACKGROUND_COLOR);
 }
